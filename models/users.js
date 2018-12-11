@@ -12,6 +12,7 @@ const UserSchema = new Schema({
             message: 'Username must be alphanumeric and between 2 and 32 characters'
         },
         unique: true,
+        trim true
     },
     password: {
         type: String,
