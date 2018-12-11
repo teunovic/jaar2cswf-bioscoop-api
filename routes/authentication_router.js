@@ -35,8 +35,11 @@ router.post('/login', function(req, res) {
 router.post('/register', function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
-
-    users.User.create({username: username, password: password})
+    
+    // tijdelijk register uit omdat iedereen ivm heroku
+    
+    res.status(403).json(new ErrorResponse(1, 'register staat uit bois'));
+    /*users.User.create({username: username, password: password})
         .then(user => {
             console.log(user);
             res.json({
@@ -53,7 +56,7 @@ router.post('/register', function(req, res) {
                 return;
             }
             res.status(409).json(new ErrorResponse(1, err.message));
-        })
+        })*/
 });
 
 
