@@ -34,17 +34,17 @@ router.post('/login', function(req, res) {
 
 router.post('/register', function(req, res) {
     let username = req.body.username;
-    let password = String(req.body.password) || '';
-
-    if(!password.match("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) {
-        res.status(409).json(new ErrorResponse(1, 'Password must be eight characters or more, and contain at least one letter and one number'));
-        return;
-    }
+    let password = req.body.password;
 
     users.User.create({username: username, password: password})
         .then(user => {
             console.log(user);
-            res.json({token: jwt.encode(user._id)});
+            res.json({
+                _id: user._id,
+                username: user.username,
+                isAdmin: user.isAdmin,
+                token: jwt.encode(user._id)
+            });
         })
         .catch(err => {
             console.log(err);

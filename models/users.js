@@ -5,15 +5,23 @@ const UserSchema = new Schema({
     username: {
         type: String,
         required: [true, 'Username must be provided'],
-        minlength: 2,
-        maxlength: 32,
+        validate: {
+            validator: function(v) {
+                return /([a-zA-Z0-9-_]{2,32})/.test(v);
+            },
+            message: 'Username must be alphanumeric and between 2 and 32 characters'
+        },
         unique: true,
     },
     password: {
         type: String,
         required: [true, 'Password must be provided'],
-        minlength: 2,
-        maxlength: 64,
+            validate: {
+            validator: function(v) {
+                return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(v);
+            },
+            message: 'Password must be at least 8 characters, and contain at least 1 letter and 1 number'
+        }
     },
     isAdmin: {
         type: Boolean,
