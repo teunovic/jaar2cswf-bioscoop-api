@@ -71,8 +71,13 @@ router.post('/', function(req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-    res.locals.movie.remove();
-    res.status(200).json({});
+    cinema.Show.find({ movie: res.locals.movie._id })
+        .remove()
+        .exec()
+        .then(() => {
+            res.locals.movie.remove();
+            res.status(200).json({});
+        })
 });
 
 router.put('/:id', function(req, res) {
