@@ -71,7 +71,6 @@ router.post('/', function(req, res) {
         res.status(409).json(new ErrorResponse(1, 'Invalid start'));
         return;
     }
-    console.log(start);
 
     cinema.Movie.findById(props.movie)
         .then(movie => {
@@ -90,7 +89,6 @@ router.post('/', function(req, res) {
 
                     cinema.Show.find({room: props.room, start: {$lt: end}, end: {$gt: start}})
                         .then(shows => {
-                            console.log(shows);
                             if(shows.length) {
                                 res.status(409).json(new ErrorResponse(4, 'Room in use'));
                                 return;

@@ -23,7 +23,6 @@ describe('authentication endpoint tests', () => {
             })
             .end((err, res) => {
                 should.not.exist(err);
-                console.log(res);
                 res.should.have.status(409);
                 res.body.should.have.property('id');
                 res.body.id.should.equal(1);

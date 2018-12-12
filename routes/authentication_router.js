@@ -10,11 +10,8 @@ router.post('/login', function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
 
-    console.log('logging in with ' + username);
-
     users.User.findOne({username: username, password: password})
         .then(user => {
-            console.log(user);
             if (!user) {
                 res.status(403).json(new ErrorResponse(1, "Incorrect username or password"));
                 return;

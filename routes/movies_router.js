@@ -62,7 +62,6 @@ router.all('*', function(req, res, next) {
 
 router.post('/', function(req, res) {
     let props = req.body;
-    console.log(props);
     cinema.Movie.create(props)
         .then(movie => {
             res.status(200).json(movie);
