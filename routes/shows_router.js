@@ -18,6 +18,8 @@ router.get('/', function(req, res) {
             search.start = {$gte: moment(day).startOf('day'), $lt: moment(day).endOf('day')};
     }
     cinema.Show.find(search)
+        .sort('start')
+        .exec()
         .then(shows => {
             res.status(200).json(shows);
         })
