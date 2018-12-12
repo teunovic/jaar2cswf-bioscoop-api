@@ -3,7 +3,6 @@ let router = express.Router();
 let ErrorResponse = require('../response_models/errorresponse');
 let cinema = require('../models/cinema');
 let mongoose = require('mongoose');
-let util = require('../util/util');
 let moment = require('moment');
 
 router.get('/', function(req, res) {
@@ -58,7 +57,7 @@ router.get('/:id', function(req, res) {
 router.all('*', function(req, res, next) {
     // admin check for all endpoints below; POST/PUT/DELETE
     if(!res.locals.user.isAdmin) {
-        res.status(403).json(new ErrorResponse(1, 'No authorisation'));
+        res.status(403).json(new ErrorResponse(1, 'No authorization'));
         return;
     }
     next();
@@ -68,7 +67,7 @@ router.post('/', function(req, res) {
     let props = req.body;
 
     let start = new Date(props.start);
-    if(!start) {
+    if(isNaN(start.getTime())) {
         res.status(409).json(new ErrorResponse(1, 'Invalid start'));
         return;
     }
@@ -77,41 +76,49 @@ router.post('/', function(req, res) {
     cinema.Movie.findById(props.movie)
         .then(movie => {
             if(!movie) {
-                res.status(409).json(new ErrorResponse(1, 'Movie does not exist'));
+                res.status(409).json(new ErrorResponse(2, 'Movie does not exist'));
                 return;
             }
-            let end = moment(start).add(movie.minutes, 'm').toDate();
-            props.end = end;
-
-            cinema.Show.find({room: props.room, start: {$lt: end}, end: {$gt: start}})
-                .then(shows => {
-                    console.log(shows);
-                    if(shows.length) {
-                        res.status(409).json(new ErrorResponse(2, 'Room in use'));
+            cinema.Room.findById(props.room)
+                .then(room => {
+                    if(!room) {
+                        res.status(409).json(new ErrorResponse(3, 'Room does not exist'));
                         return;
                     }
-                    cinema.Show.create(props)
-                        .then(show => {
-                            res.status(200).json(show);
+                    let end = moment(start).add(movie.minutes, 'm').toDate();
+                    props.end = end;
+
+                    cinema.Show.find({room: props.room, start: {$lt: end}, end: {$gt: start}})
+                        .then(shows => {
+                            console.log(shows);
+                            if(shows.length) {
+                                res.status(409).json(new ErrorResponse(4, 'Room in use'));
+                                return;
+                            }
+                            cinema.Show.create(props)
+                                .then(show => {
+                                    res.status(200).json(show);
+                                })
+                                .catch(err => {
+                                    res.status(409).json(new ErrorResponse(-4, err.message));
+                                })
                         })
                         .catch(err => {
-                            res.status(409).json(new ErrorResponse(-2, err.message));
-                        })
+                            res.status(409).json(new ErrorResponse(-3, err.message));
+                        });
                 })
                 .catch(err => {
-                    res.status(409).json(new ErrorResponse(-3, err.message));
+                    res.status(409).json(new ErrorResponse(-2, err.message));
                 });
         })
         .catch(err => {
             res.status(409).json(new ErrorResponse(-1, err.message));
         });
-
-
 });
 
 router.delete('/:id', function(req, res) {
-    res.locals.show.remove();
-    res.status(200).json({});
+    res.locals.show.remove()
+        .then(() => res.status(200).json({}));
 });
 
 router.put('/:id', function(req, res) {

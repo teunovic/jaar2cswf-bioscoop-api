@@ -13,8 +13,6 @@ mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb+srv://monty:cFNNGbULeYjIEgzX@cluster0-yetnu.mongodb.net/test?retryWrites=true', {useNewUrlParser: true})
     .then(() => {
         console.log("MongoDB connected");
-
-
         app.use(bodyParser.json());
 
         routes(app);

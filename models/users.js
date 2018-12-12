@@ -7,7 +7,7 @@ const UserSchema = new Schema({
         required: [true, 'Username must be provided'],
         validate: {
             validator: function(v) {
-                return /([a-zA-Z0-9-_]{2,32})/.test(v);
+                return /^([a-zA-Z0-9-_]{2,32})$/.test(v);
             },
             message: 'Username must be alphanumeric and between 2 and 32 characters'
         },

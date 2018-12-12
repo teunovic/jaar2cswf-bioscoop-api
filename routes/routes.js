@@ -7,6 +7,12 @@ let ErrorResponse = require('../response_models/errorresponse');
 
 module.exports = router => {
 
+    router.all('*', (req, res, next) => {
+        console.log('yeet meat yoyoyoyoyo');
+        console.log(req.method + ' ' + req.path);
+        next();
+    });
+
     router.use(authenticationRouter);
     router.use('/movies', moviesRouter);
     router.use('/rooms', roomsRouter);

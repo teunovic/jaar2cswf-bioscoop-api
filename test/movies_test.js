@@ -16,21 +16,18 @@ describe('movie endpoint tests', () => {
     let userToken;
     let adminToken;
 
-    before(done => {
-        users.User.create({
+    before(async function() {
+        let user = await users.User.create({
             username: 'test-account-user',
             password: 'test1234!'
-        }).then(user => {
-            userToken = jwt.encode(user._id);
-            users.User.create({
-                username: 'test-account-admin',
-                password: 'test1234!',
-                isAdmin: true
-            }).then(admin => {
-                adminToken = jwt.encode(admin._id);
-                done();
-            });
-        })
+        });
+        userToken = jwt.encode(user._id);
+        let admin = await users.User.create({
+            username: 'test-account-admin',
+            password: 'test1234!',
+            isAdmin: true
+        });
+        adminToken = jwt.encode(admin._id);
     });
 
     after(done => {

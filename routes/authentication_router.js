@@ -35,13 +35,9 @@ router.post('/login', function(req, res) {
 router.post('/register', function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
-    
-    // TODO: tijdelijk register uit ivm heroku
-    
-    res.status(403).json(new ErrorResponse(1, 'register staat uit bois'));
-    /*users.User.create({username: username, password: password})
+
+    users.User.create({username: username, password: password})
         .then(user => {
-            console.log(user);
             res.json({
                 _id: user._id,
                 username: user.username,
@@ -50,13 +46,12 @@ router.post('/register', function(req, res) {
             });
         })
         .catch(err => {
-            console.log(err);
             if(err.code === 11000) {
                 res.status(409).json(new ErrorResponse(2, 'Username is already taken'));
                 return;
             }
             res.status(409).json(new ErrorResponse(1, err.message));
-        })*/
+        })
 });
 
 

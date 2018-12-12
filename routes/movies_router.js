@@ -77,8 +77,8 @@ router.delete('/:id', function(req, res) {
         .remove()
         .exec()
         .then(() => {
-            res.locals.movie.remove();
-            res.status(200).json({});
+            res.locals.movie.remove()
+                .then(() => res.status(200).json({}));
         })
 });
 
