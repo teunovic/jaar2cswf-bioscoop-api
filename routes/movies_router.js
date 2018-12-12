@@ -4,6 +4,8 @@ let ErrorResponse = require('../response_models/errorresponse');
 let cinema = require('../models/cinema');
 let mongoose = require('mongoose');
 let util = require('../util/util');
+let async = require('async');
+let moment = require('moment');
 
 router.get('/', function(req, res) {
     let search = {};
@@ -81,6 +83,23 @@ router.delete('/:id', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
+
+    if(req.body && req.body.minutes && !isNaN(req.body.minutes) && req.body.minutes >= 1 && req.body.minutes <= 1024 && req.body.minutes !== res.locals.movie.minutes) {
+        // Minutes changed, change all cached show end dates (used to check room availability)
+        let newMinutes = req.body.minutes;
+        cinema.Show.find({movie: res.locals.movie._id})
+            .then(shows => {
+                async.eachSeries(shows, (show, done) => {
+                    show.end = moment(show.start).add(newMinutes, 'm').toDate();
+                    show.save((err) => {
+                        if(err)
+                            console.error(err);
+                        done();
+                    })
+                })
+            })
+    }
+
     cinema.Movie.findByIdAndUpdate(res.locals.movie._id, req.body, {new: true, runValidators: true})
         .then(updatedMovie => {
             res.status(200).json(updatedMovie);
