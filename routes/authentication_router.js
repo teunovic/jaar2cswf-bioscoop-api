@@ -36,7 +36,7 @@ router.post('/register', function(req, res) {
     let username = req.body.username;
     let password = req.body.password;
     
-    // tijdelijk register uit omdat iedereen ivm heroku
+    // TODO: tijdelijk register uit ivm heroku
     
     res.status(403).json(new ErrorResponse(1, 'register staat uit bois'));
     /*users.User.create({username: username, password: password})

@@ -19,7 +19,7 @@ const UserSchema = new Schema({
         required: [true, 'Password must be provided'],
             validate: {
             validator: function(v) {
-                return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(v);
+                return /[a-zA-Z]+/.test(v) && /[0-9]+/.test(v) && v.length >= 8;
             },
             message: 'Password must be at least 8 characters, and contain at least 1 letter and 1 number'
         }
